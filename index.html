@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DANE.ZONE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Neue+Haas+Grotesk+Display+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f5f0;
+      --accent: #e8ff00;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans Condensed', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--sans);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(245,245,240,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,245,240,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 32px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    header {
+      padding-top: 48px;
+      padding-bottom: 0;
+      border-bottom: 1px solid rgba(245,245,240,0.12);
+      padding-bottom: 20px;
+      margin-bottom: 0;
+    }
+
+    .wordmark {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 0 60px;
+    }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,245,240,0.4);
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-family: var(--sans);
+      font-size: clamp(42px, 8vw, 88px);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 36px;
+      color: var(--white);
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .descriptor {
+      font-family: var(--sans);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(245,245,240,0.55);
+      max-width: 420px;
+      margin-bottom: 56px;
+      border-left: 1px solid rgba(232,255,0,0.3);
+      padding-left: 16px;
+    }
+
+    .form-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(245,245,240,0.35);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 0;
+      max-width: 480px;
+    }
+
+    .form-row input[type="email"] {
+      flex: 1;
+      background: transparent;
+      border: 1px solid rgba(245,245,240,0.2);
+      border-right: none;
+      color: var(--white);
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .form-row input[type="email"]::placeholder {
+      color: rgba(245,245,240,0.2);
+    }
+
+    .form-row input[type="email"]:focus {
+      border-color: rgba(232,255,0,0.5);
+    }
+
+    .form-row button[type="submit"] {
+      background: var(--accent);
+      color: var(--black);
+      border: 1px solid var(--accent);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 14px 20px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .form-row button[type="submit"]:hover {
+      background: var(--black);
+      color: var(--accent);
+    }
+
+    .status-msg {
+      font-family: var(--mono);
+      font-size: 12px;
+      margin-top: 12px;
+      min-height: 18px;
+      color: rgba(232,255,0,0.7);
+      letter-spacing: 0.05em;
+    }
+
+    .status-msg.error {
+      color: rgba(245,100,80,0.8);
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid rgba(245,245,240,0.08);
+      padding: 20px 32px;
+      max-width: 720px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer span {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: rgba(245,245,240,0.2);
+      letter-spacing: 0.1em;
+    }
+
+    .rule-v {
+      position: fixed;
+      top: 0;
+      right: 120px;
+      width: 1px;
+      height: 100vh;
+      background: rgba(245,245,240,0.04);
+      z-index: 0;
+    }
+
+    @media (max-width: 540px) {
+      .container { padding: 0 20px; }
+      footer { padding: 20px; }
+      .form-row { flex-direction: column; }
+      .form-row input[type="email"] { border-right: 1px solid rgba(245,245,240,0.2); border-bottom: none; }
+      .form-row input[type="email"]:focus { border-color: rgba(232,255,0,0.5); }
+      .form-row button[type="submit"] { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-overlay" aria-hidden="true"></div>
+  <div class="rule-v" aria-hidden="true"></div>
+
+  <div class="container">
+    <header>
+      <span class="wordmark">DANE.ZONE</span>
+    </header>
+
+    <main>
+      <p class="eyebrow">New store incoming</p>
+      <h1>Something<br><em>new</em><br>is loading.</h1>
+      <p class="descriptor">
+        Plugins, tools, and music from the studio of Dane.<br>
+        Leave your email and you'll be first to know when the new store goes live.
+      </p>
+
+      <form id="subscribe-form" action="https://buttondown.com/api/emails/embed-subscribe/dane.zone" method="post" target="popupwindow">
+        <label class="form-label" for="bd-email">Notify me when it's live</label>
+        <div class="form-row">
+          <input type="email" id="bd-email" name="email" placeholder="your@email.com" required autocomplete="email">
+          <input type="hidden" value="1" name="embed">
+          <button type="submit">Notify me</button>
+        </div>
+        <p class="status-msg" id="status-msg" aria-live="polite"></p>
+      </form>
+    </main>
+  </div>
+
+  <footer>
+    <span>© 2026 DANE.ZONE</span>
+    <span>Los Angeles, CA</span>
+  </footer>
+
+  <script>
+    const form = document.getElementById('subscribe-form');
+    const msg = document.getElementById('status-msg');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('bd-email').value;
+      const data = new FormData();
+      data.append('email', email);
+      data.append('embed', '1');
+
+      fetch('https://buttondown.com/api/emails/embed-subscribe/dane.zone', {
+        method: 'POST',
+        body: data,
+        mode: 'no-cors'
+      }).then(() => {
+        msg.textContent = 'You\'re in. Talk soon.';
+        msg.classList.remove('error');
+        form.querySelector('input[type="email"]').value = '';
+      }).catch(() => {
+        msg.textContent = 'Something went wrong. Try again.';
+        msg.classList.add('error');
+      });
+    });
+  </script>
+
+</body>
+</html>
